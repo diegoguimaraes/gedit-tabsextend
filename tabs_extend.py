@@ -19,7 +19,6 @@
 
 from gi.repository import GObject, Gtk, Gedit, Gdk
 
-
 # UI Manager XML
 ACTIONS_UI = """<ui>
     <menubar name="MenuBar">
@@ -39,7 +38,6 @@ ACTIONS_UI = """<ui>
     </popup>
 </ui>"""
 
-
 def lookup_widget(base, widget_name):
     """ Find widget by name """
     widgets = []
@@ -51,15 +49,10 @@ def lookup_widget(base, widget_name):
             widgets += lookup_widget(widget, widget_name)
     return widgets
 
-
 class TabsExtendPlugin(GObject.Object, Gedit.WindowActivatable):
-
     __gtype_name__ = "TabsExtendPlugin"
-
     window = GObject.property(type=Gedit.Window)
-
     handler_ids = []
-
     tabs_closed = []
 
     def __init__(self):
@@ -166,7 +159,6 @@ class TabsExtendPlugin(GObject.Object, Gedit.WindowActivatable):
     # TODO: Save position tab
     def save_tab_to_undo(self, tab):
         """ Save close tabs """
-
         document = tab.get_document()
         if document.get_location() != None:
             self.tabs_closed.append(
@@ -176,11 +168,10 @@ class TabsExtendPlugin(GObject.Object, Gedit.WindowActivatable):
     def on_undo_close(self, action):
         if len(self.tabs_closed) > 0:
             uri, line = tab = self.tabs_closed[-1:][0]
-
         if uri == None:
             self.window.create_tab(True)
         else:
-            self.window.create_tab_from_uri(uri, None, line, True, True)
+            self.window.create_tab_from_location(uri, None, line, True, True, True)
 
         self.tabs_closed.remove(tab)
         self.do_update_state()
